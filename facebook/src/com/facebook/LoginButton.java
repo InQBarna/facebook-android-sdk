@@ -324,6 +324,9 @@ public class LoginButton extends Button {
     }
 
     private void finishInit() {
+    	if (isInEditMode())
+    		return;
+    	
         sessionTracker = new SessionTracker(getContext(), new LoginButtonCallback(), null, false);
         setOnClickListener(new LoginClickListener());
         setButtonText();
@@ -345,11 +348,14 @@ public class LoginButton extends Button {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (!sessionTracker.isTracking()) {
-            sessionTracker.startTracking();
-            fetchUserInfo();
-            setButtonText();
-        }
+
+		if (!isInEditMode()) {
+			if (!sessionTracker.isTracking()) {
+				sessionTracker.startTracking();
+				fetchUserInfo();
+				setButtonText();
+			}
+		}
     }
 
     @Override
@@ -384,6 +390,10 @@ public class LoginButton extends Button {
     }
 
     private boolean initializeActiveSessionWithCachedToken(Context context) {
+    	
+    	if (isInEditMode())
+    		return true;
+    	
         if (context == null) {
             return false;
         }
